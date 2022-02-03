@@ -10,8 +10,8 @@
       "@components/*": [
         "./src/components/*"
       ],
-      "@screen/*": [
-        "./src/screen/*"
+      "@screens/*": [
+        "./src/screens/*"
       ],
       "@assets/*": [
         "./src/assets/*"
