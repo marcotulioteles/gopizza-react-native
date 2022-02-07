@@ -15,6 +15,9 @@
       ],
       "@assets/*": [
         "./src/assets/*"
+      ],
+      "@hooks/*": [
+        "./src/hooks/*"
       ]
     }
   }
