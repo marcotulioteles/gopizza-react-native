@@ -1,6 +1,8 @@
 import React, { useState } from "react";
-import { Platform, TouchableOpacity, ScrollView } from 'react-native';
+import { Platform, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import firestore from '@react-native-firebase/firestore';
+import storage from '@react-native-firebase/storage';
 
 import { Button } from '@components/Button';
 import { ButtonBack } from '@components/ButtonBack';
@@ -44,7 +46,47 @@ export function Product() {
         setImage(result.uri);
       }
     }
-  }
+  };
+
+  async function handleAddNewPizza() {
+    if (!name.trim())
+      return Alert.alert('Cadastro', 'Informe o nome da pizza.');
+
+    if (!description.trim())
+      return Alert.alert('Cadastro', 'Informe a descrição da pizza.');
+
+    if (!image)
+      return Alert.alert('Cadastro', 'Selecione a imagem da pizza.');
+
+    if (!priceSizeP || !priceSizeM || !priceSizeG)
+      return Alert.alert('Cadastro', 'Informe o preço de todos os tamanhos da pizza.');
+
+    setIsLoading(true);
+
+    const fileName = new Date().getTime();
+    const reference = storage().ref(`/pizzas/${fileName}.png`);
+
+    await reference.putFile(image);
+    const photo_url = await reference.getDownloadURL();
+
+    firestore().collection('pizzas')
+      .add({
+        name,
+        name_insensitive: name.toLowerCase().trim(),
+        description,
+        price_sizes: {
+          p: priceSizeP,
+          m: priceSizeM,
+          g: priceSizeG
+        },
+        photo_url,
+        photo_path: reference.fullPath
+      })
+      .then(() => Alert.alert('Cadastro', 'Pizza cadastrada com sucesso.'))
+      .catch(() => Alert.alert('Cadastro', 'Não foi possível cadastrar a pizza.'));
+
+    setIsLoading(false);
+  };
 
   return (
     <Container behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
@@ -98,6 +140,7 @@ export function Product() {
             title='Cadastrar pizza'
             type='secondary'
             isLoading={isLoading}
+            onPress={handleAddNewPizza}
           />
         </Form>
       </ScrollView>
