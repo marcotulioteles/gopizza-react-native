@@ -1,12 +1,13 @@
-import React from 'react';
-import { TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Alert, TouchableOpacity, FlatList } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import happyEmoji from '@assets/happy.png'
+import firestore from '@react-native-firebase/firestore';
 
 import { useTheme } from 'styled-components/native';
 
 import { Search } from '@components/Search';
-import { ProductCard } from '@components/ProductCard';
+import { ProductCard, ProductProps } from '@components/ProductCard';
 
 import {
   Container,
@@ -20,7 +21,34 @@ import {
 } from './styles';
 
 export function Home() {
+  const [pizzas, setPizzas] = useState<ProductProps[]>([]);
   const { COLORS } = useTheme();
+
+  function fetchPizzas(value: string) {
+    const formattedValue = value.toLowerCase().trim();
+
+    firestore()
+      .collection('pizzas')
+      .orderBy('name_insensitive')
+      .startAt(formattedValue)
+      .endAt(`${formattedValue}\uf8ff`)
+      .get()
+      .then(response => {
+        const data = response.docs.map(doc => {
+          return {
+            id: doc.id,
+            ...doc.data(),
+          }
+        }) as ProductProps[];
+
+        setPizzas(data);
+      })
+      .catch(() => Alert.alert('Consulta', 'Não foi possível realizar a consulta'));
+  }
+
+  useEffect(() => {
+    fetchPizzas('');
+  }, []);
 
   return (
     <Container>
@@ -45,12 +73,15 @@ export function Home() {
         <MenuItemsNumber>10 pizzas</MenuItemsNumber>
       </MenuHeader>
 
-      <ProductCard
-        data={{
-          id: '1',
-          name: 'Pizza',
-          description: 'Sabores e ingredientes dessa pizza...',
-          photo_url: 'https://images.unsplash.com/photo-1593246049226-ded77bf90326?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MjB8fHBpenphfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60'
+      <FlatList
+        data={pizzas}
+        keyExtractor={item => item.id}
+        renderItem={({ item }) => <ProductCard data={item} />}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          paddingTop: 20,
+          paddingBottom: 125,
+          marginHorizontal: 24
         }}
       />
     </Container>
