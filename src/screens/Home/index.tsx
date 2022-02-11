@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Alert, TouchableOpacity, FlatList } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import happyEmoji from '@assets/happy.png'
 import firestore from '@react-native-firebase/firestore';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 import { useTheme } from 'styled-components/native';
 
@@ -18,7 +18,8 @@ import {
   GreetingText,
   MenuHeader,
   MenuItemsNumber,
-  Title
+  Title,
+  NewProductButton
 } from './styles';
 
 export function Home() {
@@ -48,24 +49,28 @@ export function Home() {
         setPizzas(data);
       })
       .catch(() => Alert.alert('Consulta', 'Não foi possível realizar a consulta'));
-  }
+  };
 
   function handleSearch() {
     fetchPizzas(search);
-  }
+  };
 
   function handleSearchClear() {
     setSearch('');
     fetchPizzas('');
-  }
+  };
 
   function handleOpen(id: string) {
     navigation.navigate('product', { id });
-  }
+  };
 
-  useEffect(() => {
+  function handleAdd() {
+    navigation.navigate('product', {})
+  };
+
+  useFocusEffect(useCallback(() => {
     fetchPizzas('');
-  }, []);
+  }, []));
 
   return (
     <Container>
@@ -89,7 +94,7 @@ export function Home() {
 
       <MenuHeader>
         <Title>Cardápio</Title>
-        <MenuItemsNumber>10 pizzas</MenuItemsNumber>
+        <MenuItemsNumber>{pizzas.length} pizzas</MenuItemsNumber>
       </MenuHeader>
 
       <FlatList
@@ -107,6 +112,11 @@ export function Home() {
           paddingBottom: 125,
           marginHorizontal: 24
         }}
+      />
+
+      <NewProductButton
+        title='Cadastrar Pizza'
+        onPress={handleAdd}
       />
     </Container>
   )
