@@ -1,12 +1,14 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Alert, TouchableOpacity, FlatList } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
-import happyEmoji from '@assets/happy.png'
 import firestore from '@react-native-firebase/firestore';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
-import { useTheme } from 'styled-components/native';
+import happyEmoji from '@assets/happy.png'
 
+import { useAuth } from '@hooks/auth';
+
+import { useTheme } from 'styled-components/native';
 import { Search } from '@components/Search';
 import { ProductCard, ProductProps } from '@components/ProductCard';
 
@@ -28,6 +30,7 @@ export function Home() {
 
   const navigation = useNavigation();
   const { COLORS } = useTheme();
+  const { user, signOut } = useAuth();
 
   function fetchPizzas(value: string) {
     const formattedValue = value.toLowerCase().trim();
@@ -61,7 +64,8 @@ export function Home() {
   };
 
   function handleOpen(id: string) {
-    navigation.navigate('product', { id });
+    const route = user?.isAdmin ? 'product' : 'order'
+    navigation.navigate(route, { id });
   };
 
   function handleAdd() {
@@ -80,7 +84,7 @@ export function Home() {
           <GreetingText>Olá, Admin</GreetingText>
         </Greeting>
 
-        <TouchableOpacity>
+        <TouchableOpacity onPress={signOut}>
           <MaterialIcons name='logout' color={COLORS.TITLE} size={24} />
         </TouchableOpacity>
       </Header>
@@ -114,10 +118,13 @@ export function Home() {
         }}
       />
 
-      <NewProductButton
-        title='Cadastrar Pizza'
-        onPress={handleAdd}
-      />
+      {
+        user?.isAdmin &&
+        <NewProductButton
+          title='Cadastrar Pizza'
+          onPress={handleAdd}
+        />
+      }
     </Container>
   )
 }

@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { Platform } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 import { PIZZA_TYPES } from '@utils/pizzaTypes';
 
-import { ButtonBack } from '@components/ButtonBack'
+import { ButtonBack } from '@components/ButtonBack';
 import { RadioButton } from "@components/RadioButton";
 import { Input } from "@components/Input";
 import { Button } from "@components/Button";
@@ -25,12 +26,18 @@ import {
 export function Order() {
   const [size, setSize] = useState('g');
 
+  const navigation = useNavigation();
+
+  function handleGoBack() {
+    navigation.goBack();
+  }
+
   return (
     <Container behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <ContentScroll>
         <Header>
           <ButtonBack
-            onPress={() => {}}
+            onPress={handleGoBack}
             style={{ marginBottom: 108 }}
           />
         </Header>
