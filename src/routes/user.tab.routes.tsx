@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Platform } from 'react-native';
 import { useTheme } from 'styled-components/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+
+import firestore from '@react-native-firebase/firestore';
 
 import { Home } from '@screens/Home';
 import { Orders } from '@screens/Orders';
@@ -11,6 +13,18 @@ const { Navigator, Screen } = createBottomTabNavigator();
 
 export function UserTabRoutes() {
   const { COLORS } = useTheme();
+  const [notifications, setNotifications] = useState('0');
+
+  useEffect(() => {
+    const subscribe = firestore()
+      .collection('orders')
+      .where('status', '==', 'Pronto')
+      .onSnapshot(querySnapshot => {
+        setNotifications(String(querySnapshot.docs.length));
+      })
+
+    return () => subscribe();
+  }, [])
 
   return (
     <Navigator
@@ -42,7 +56,7 @@ export function UserTabRoutes() {
             <BottomMenu
               title='Pedidos'
               color={color}
-              notifications='5'
+              notifications={notifications}
             />
           )
         }}
