@@ -5,9 +5,9 @@ import { useAuth } from '@hooks/auth';
 
 import { Home } from '@screens/Home';
 import { Product } from '@screens/Product';
-import { Order } from "@screens/Order";
+import { Order } from '@screens/Order';
 
-import { UserTabRoutes } from "./user.tab.routes";
+import { UserTabRoutes } from './user.tab.routes';
 const { Navigator, Screen, Group } = createNativeStackNavigator();
 
 export function UserStackRoutes() {
@@ -23,12 +23,11 @@ export function UserStackRoutes() {
           </Group>
         ) : (
           <Group>
-            <Screen name='userTabRoutes' component={UserTabRoutes} />
+            <Screen name='UserTabRoutes' component={UserTabRoutes} />
             <Screen name='order' component={Order} />
           </Group>
         )
       }
-
     </Navigator>
   )
 }

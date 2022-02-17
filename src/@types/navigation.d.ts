@@ -3,7 +3,7 @@ export type ProductNavigationProps = {
 }
 
 export type OrderNavigationProps = {
-  id: string;
+  id?: string;
 }
 
 export declare global {
