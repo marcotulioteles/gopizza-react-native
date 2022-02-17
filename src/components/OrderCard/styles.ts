@@ -4,7 +4,7 @@ type ContainerProps = {
   index: number;
 }
 
-export type StatusTypesProps = 'preparando' | 'pronto' | 'entregue';
+export type StatusTypesProps = 'Preparando' | 'Pronto' | 'Entregue';
 
 type StatusProps = {
   status: StatusTypesProps;
@@ -54,16 +54,16 @@ export const StatusContainer = styled.View<StatusProps>`
   align-items: center;
   justify-content: center;
 
-  ${({ status, theme }) => status === 'preparando' && css`
+  ${({ status, theme }) => status === 'Preparando' && css`
     background-color: ${theme.COLORS.ALERT_50};
     border: 1px solid ${theme.COLORS.ALERT_900};
   `};
 
-  ${({ status, theme }) => status === 'pronto' && css`
+  ${({ status, theme }) => status === 'Pronto' && css`
     background-color: ${theme.COLORS.SUCCESS_900};
   `};
 
-  ${({ status, theme }) => status === 'entregue' && css`
+  ${({ status, theme }) => status === 'Entregue' && css`
     background-color: ${theme.COLORS.SECONDARY_900};
   `};
 `;
@@ -74,6 +74,6 @@ export const StatusLabel = styled.Text<StatusProps>`
 
   ${({ status, theme }) => css`
     font-family: ${theme.FONTS.TEXT};
-    color: ${status === 'preparando' ? theme.COLORS.ALERT_900 : theme.COLORS.TITLE};
+    color: ${status === 'Preparando' ? theme.COLORS.ALERT_900 : theme.COLORS.TITLE};
   `};
 `;
