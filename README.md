@@ -1,4 +1,4 @@
-# 🚗 GOPIZZA - React Native Application
+# 🍕 GOPIZZA - React Native Application
 
 GOPIZZA is a mobile application where you can let your customers order pizzas and simultaneously the waiters can manage all orders by the app admin section.
 
